@@ -1,0 +1,61 @@
+// =================================================================
+// Fireflies — estilos
+// El canvas se fija en la parte inferior del viewport, no recibe
+// clicks (pointer-events: none) y queda detrás del contenido
+// =================================================================
+
+.fireflies-container {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 220px;          // altura de la escena nocturna
+  pointer-events: none;   // no bloquea clicks ni selección
+  z-index: 0;             // detrás del contenido principal
+  overflow: hidden;
+
+  // Solo mostrar en dark mode — en light mode no tiene sentido
+  // una escena nocturna
+  :root[saved-theme="light"] & {
+    display: none;
+  }
+
+  // Respetar preferencia de menor movimiento
+  @media (prefers-reduced-motion: reduce) {
+    .fireflies-canvas {
+      animation: none;
+    }
+  }
+
+  .fireflies-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}
+
+// Asegurar que el contenido principal y el footer queden por
+// encima del canvas. Si tu sitio tiene otros wrappers, ajustá
+// estos selectores
+body > #quartz-root,
+body > main,
+body > footer {
+  position: relative;
+  z-index: 1;
+}
+
+// Si quisieras suavizar la transición entre el contenido y el
+// canvas (fade-out del fondo hacia las luciérnagas), descomentá:
+//
+// body::after {
+//   content: "";
+//   position: fixed;
+//   left: 0; right: 0; bottom: 220px;
+//   height: 80px;
+//   background: linear-gradient(to bottom,
+//     transparent 0%,
+//     rgba(0, 0, 0, 0.6) 100%);
+//   pointer-events: none;
+//   z-index: 0;
+// }

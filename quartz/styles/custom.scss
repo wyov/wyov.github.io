@@ -1,0 +1,282 @@
+// =================================================================
+// wyov-blog — custom.scss
+// Catppuccin Mocha OLED variant + tweaks visuales propios
+// =================================================================
+
+@use "./base.scss";
+
+// -----------------------------------------------------------------
+// Catppuccin Mocha palette — todas las variables disponibles
+// Referencia: https://catppuccin.com/palette
+// -----------------------------------------------------------------
+:root {
+  // Acentos pastel
+  --ctp-rosewater: #f5e0dc;
+  --ctp-flamingo:  #f2cdcd;
+  --ctp-pink:      #f5c2e7;
+  --ctp-mauve:     #cba6f7;  // <-- acento principal del sitio
+  --ctp-red:       #f38ba8;
+  --ctp-maroon:    #eba0ac;
+  --ctp-peach:     #fab387;  // <-- usado para inline code
+  --ctp-yellow:    #f9e2af;
+  --ctp-green:     #a6e3a1;
+  --ctp-teal:      #94e2d5;
+  --ctp-sky:       #89dceb;
+  --ctp-sapphire:  #74c7ec;
+  --ctp-blue:      #89b4fa;
+  --ctp-lavender:  #b4befe;
+
+  // Grises (texto)
+  --ctp-text:      #cdd6f4;
+  --ctp-subtext1:  #bac2de;
+  --ctp-subtext0:  #a6adc8;
+  --ctp-overlay2:  #9399b2;
+  --ctp-overlay1:  #7f849c;
+  --ctp-overlay0:  #6c7086;
+
+  // Superficies — overrideadas a OLED puro abajo
+  --ctp-surface2:  #585b70;
+  --ctp-surface1:  #45475a;
+  --ctp-surface0:  #313244;
+
+  // Bases — OLED override
+  --ctp-base:      #000000;  // <-- negro puro (OLED)
+  --ctp-mantle:    #050505;  // <-- apenas más claro para distinguir paneles
+  --ctp-crust:     #0a0a0a;
+}
+
+// -----------------------------------------------------------------
+// Dark theme override → OLED Catppuccin Mocha
+// Estos overrides solo aplican cuando el theme está en dark
+// -----------------------------------------------------------------
+:root[saved-theme="dark"] {
+  --light:       var(--ctp-base);       // fondo principal NEGRO
+  --lightgray:   #1a1a1a;               // separadores muy sutiles
+  --gray:        var(--ctp-overlay1);   // texto secundario
+  --darkgray:    var(--ctp-subtext0);   // texto medio
+  --dark:        var(--ctp-text);       // texto principal
+  --secondary:   var(--ctp-mauve);      // acento (links, títulos del sitio)
+  --tertiary:    var(--ctp-lavender);   // hover
+  --highlight:   rgba(203, 166, 247, 0.10);
+}
+
+// -----------------------------------------------------------------
+// Code blocks — Catppuccin Mocha syntax theme
+// El plugin de syntax highlighting ya lo configura, esto son ajustes
+// adicionales del contenedor
+// -----------------------------------------------------------------
+:root[saved-theme="dark"] {
+
+  pre {
+    background-color: var(--ctp-mantle) !important;
+    border: 1px solid #1a1a1a;
+    border-radius: 6px;
+
+    & > code {
+      background: transparent !important;
+      color: var(--ctp-text);
+    }
+  }
+
+  // Inline code (entre backticks simples)
+  :not(pre) > code {
+    background-color: #0a0a0a;
+    color: var(--ctp-peach);
+    border: 1px solid #1a1a1a;
+    border-radius: 3px;
+    padding: 1px 6px;
+    font-size: 0.9em;
+  }
+}
+
+// -----------------------------------------------------------------
+// Callouts (Obsidian-style) — borde acento mauve
+// -----------------------------------------------------------------
+:root[saved-theme="dark"] .callout {
+  background-color: var(--ctp-mantle);
+  border: 1px solid #1a1a1a;
+  border-left: 3px solid var(--ctp-mauve);
+  border-radius: 0 6px 6px 0;
+
+  &[data-callout="warning"]  { border-left-color: var(--ctp-yellow); }
+  &[data-callout="danger"]   { border-left-color: var(--ctp-red); }
+  &[data-callout="tip"]      { border-left-color: var(--ctp-green); }
+  &[data-callout="info"]     { border-left-color: var(--ctp-sky); }
+  &[data-callout="example"]  { border-left-color: var(--ctp-peach); }
+  &[data-callout="quote"]    { border-left-color: var(--ctp-lavender); }
+}
+
+// -----------------------------------------------------------------
+// Wikilinks ([[note]] de Obsidian) — línea punteada mauve
+// -----------------------------------------------------------------
+:root[saved-theme="dark"] a.internal {
+  color: var(--ctp-mauve);
+  background-color: transparent;
+  border-bottom: 1px dashed var(--ctp-mauve);
+  text-decoration: none;
+  padding-bottom: 1px;
+
+  &:hover {
+    color: var(--ctp-lavender);
+    border-bottom-color: var(--ctp-lavender);
+  }
+}
+
+// Links externos — color sky con underline más sutil
+:root[saved-theme="dark"] a.external {
+  color: var(--ctp-sky);
+  text-decoration: underline;
+  text-decoration-color: var(--ctp-sky);
+  text-decoration-style: dotted;
+
+  &:hover {
+    color: var(--ctp-sapphire);
+  }
+}
+
+// -----------------------------------------------------------------
+// Tags — pills con acento mauve
+// -----------------------------------------------------------------
+:root[saved-theme="dark"] a.tag-link {
+  background-color: #0a0a0a;
+  color: var(--ctp-mauve);
+  border: 1px solid #1a1a1a;
+  border-radius: 3px;
+  padding: 2px 8px;
+  font-size: 0.85em;
+
+  &:hover {
+    background-color: #1a1a1a;
+    color: var(--ctp-lavender);
+  }
+}
+
+// -----------------------------------------------------------------
+// Sidebars — fondo apenas distinguible del main para definir áreas
+// -----------------------------------------------------------------
+:root[saved-theme="dark"] {
+
+  .sidebar.left, .sidebar.right {
+    .search-button,
+    .darkmode {
+      background-color: var(--ctp-mantle);
+      border: 1px solid #1a1a1a;
+    }
+  }
+
+  // Explorer (file tree)
+  .explorer {
+    li.folder-container > .folder-outer > ul > li > a {
+      color: var(--ctp-subtext0);
+    }
+    li > a.internal {
+      color: var(--ctp-subtext0);
+      border-bottom: none;
+
+      &:hover {
+        color: var(--ctp-mauve);
+      }
+    }
+  }
+
+  // Active page en el explorer
+  .explorer .active {
+    color: var(--ctp-mauve) !important;
+    background-color: rgba(203, 166, 247, 0.08);
+    border-radius: 3px;
+    padding: 1px 4px;
+  }
+
+  // TOC activo
+  .toc .toc-entry.in-view {
+    color: var(--ctp-mauve);
+  }
+
+  // Backlinks panel
+  .backlinks {
+    .backlink {
+      color: var(--ctp-lavender);
+
+      &:hover {
+        color: var(--ctp-mauve);
+      }
+    }
+  }
+}
+
+// -----------------------------------------------------------------
+// Graph view (right sidebar) — colores acordes a Mocha
+// -----------------------------------------------------------------
+:root[saved-theme="dark"] .graph-outer {
+  background-color: var(--ctp-mantle);
+  border: 1px solid #1a1a1a;
+  border-radius: 6px;
+}
+
+// -----------------------------------------------------------------
+// Header / nav del sitio
+// -----------------------------------------------------------------
+:root[saved-theme="dark"] {
+
+  .page-title {
+    color: var(--ctp-mauve);
+    font-weight: 500;
+  }
+
+  // Breadcrumbs
+  .breadcrumb-container a {
+    color: var(--ctp-overlay1);
+
+    &:hover {
+      color: var(--ctp-mauve);
+    }
+  }
+}
+
+// -----------------------------------------------------------------
+// Scrollbars — sutiles, no distraer
+// -----------------------------------------------------------------
+:root[saved-theme="dark"] {
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--ctp-surface0) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--ctp-surface0);
+    border-radius: 4px;
+  }
+}
+
+// -----------------------------------------------------------------
+// Selección de texto — mauve con baja opacidad
+// -----------------------------------------------------------------
+:root[saved-theme="dark"] ::selection {
+  background-color: rgba(203, 166, 247, 0.25);
+  color: var(--ctp-text);
+}
+
+// -----------------------------------------------------------------
+// Tipografía — tweaks para JetBrains Mono
+// -----------------------------------------------------------------
+body {
+  font-feature-settings: "liga" 1, "calt" 1;  // ligaduras de JetBrains Mono
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  border-bottom: 1px solid #1a1a1a;
+  padding-bottom: 0.3em;
+}

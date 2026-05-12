@@ -1,0 +1,60 @@
+## ============================================
+## OS junk
+## ============================================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+## ============================================
+## Editor / IDE
+## ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*.bak
+*~
+
+## ============================================
+## Quartz / Node build
+## ============================================
+node_modules/
+public/
+.quartz-cache/
+tsconfig.tsbuildinfo
+*.log
+
+## ============================================
+## Obsidian (config local del vault)
+## ============================================
+.obsidian/
+
+## ============================================
+## Replit (por si en algún momento lo usaste)
+## ============================================
+.replit
+replit.nix
+
+## ============================================
+## Contenido privado / drafts (no se publica ni se commitea)
+## ============================================
+content/drafts/
+content/private/
+content/_scratch/
+private/
+
+## Archivos individuales marcados como private/draft
+**/*.private.md
+**/*.draft.md
+
+## ============================================
+## Secretos (por si en algún momento agregás plugins con keys)
+## ============================================
+.env
+.env.local
+*.pem
+*.key
+
+## Carpeta "prof" que tenías — la dejo si la necesitabas
+prof/
