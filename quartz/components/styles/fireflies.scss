@@ -1,0 +1,46 @@
+// =============================================================
+//  fireflies.scss — wyov-blog
+// =============================================================
+//
+//  Canvas fijo en todo el viewport.
+//  La lógica de pasto + luciérnagas se limita a la franja inferior
+//  dentro del script; el fairy dust morado/rosa sí cubre toda la
+//  pantalla.
+// =============================================================
+
+.fireflies-container {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+
+  :root[saved-theme="light"] & {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    display: none;
+  }
+}
+
+.fireflies-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+// El contenido del sitio siempre queda arriba del canvas
+body > #quartz-root,
+body > .page,
+body > main,
+body > footer,
+.page > #quartz-body,
+.page > footer {
+  position: relative;
+  z-index: 1;
+}
