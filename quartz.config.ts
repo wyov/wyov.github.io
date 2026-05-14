@@ -7,7 +7,7 @@ import * as Plugin from "./quartz/plugins"
  */
 const config: QuartzConfig = {
   configuration: {
-    pageTitle: "wyov-title",
+    pageTitle: "wyov-offsec-notes",
     pageTitleSuffix: "",
     enableSPA: true,
     enablePopovers: true,
@@ -16,7 +16,6 @@ const config: QuartzConfig = {
     },
     locale: "en-US",
     baseUrl: "wyov.github.io",
-    // baseUrl: "wyov.github.io/wyov-blog",
     ignorePatterns: ["private", "templates", ".obsidian"],
     defaultDateType: "modified",
     generateSocialImages: false,

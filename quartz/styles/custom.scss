@@ -1,8 +1,8 @@
-// =============================================================
-//  wyov - blog - custom.scss - Quartz version 4 
-// =============================================================
-
 @use "./base.scss";
+
+// =============================================================
+//  wyov-blog — custom.scss  (verificado contra Quartz 4.5.2 source)
+// =============================================================
 
 // A) Catppuccin Mocha palette
 :root {
@@ -113,6 +113,8 @@ body > main {
 :root[saved-theme="dark"] {
 
   .recent-notes,
+  .recent-visited,
+  .tags-panel,
   .explorer,
   .toc,
   .backlinks {
@@ -130,6 +132,14 @@ body > main {
   .recent-notes > h2,
   .recent-notes > h3,
   .recent-notes > h4,
+  .recent-visited > h1,
+  .recent-visited > h2,
+  .recent-visited > h3,
+  .recent-visited > h4,
+  .tags-panel > h1,
+  .tags-panel > h2,
+  .tags-panel > h3,
+  .tags-panel > h4,
   .explorer > h1,
   .explorer > h2,
   .explorer > h3,
@@ -204,6 +214,67 @@ body > main {
       opacity: 0.7;
     }
   }
+
+  // ----- Recent Visited (client-side tracker) -----
+  .recent-visited ul.recent-visited-ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .recent-visited li.recent-visited-li {
+    margin: 0 0 0.4rem;
+    padding: 0;
+    line-height: 1.4;
+
+    a {
+      color: #cdd6f4;
+      text-decoration: none;
+      font-size: 0.85em;
+      background: transparent;
+      padding: 0;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &:hover {
+        color: #d4a574;
+      }
+
+      &[aria-current="page"] {
+        color: #a6e3a1;
+      }
+    }
+  }
+
+  .recent-visited .empty-state {
+    font-size: 0.7em;
+    color: #7f849c;
+    opacity: 0.55;
+    font-style: italic;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  // ----- Tags Panel (lista vertical de todos los tags) -----
+  .tags-panel ul.tags-panel-ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .tags-panel ul.tags-panel-ul > li {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: inline-block;
+  }
 }
 
 // F) Interacciones — hover/focus/selection
@@ -273,10 +344,23 @@ body > main {
 // H) Tags semánticos
 :root[saved-theme="dark"] {
 
-  .tags li,
+  // ----- Tag chips -----
+  // FIX: el <li> NO debe tener background ni borde — solo el <a> es el chip.
+  // (Antes ponía background en ambos, creando el double-box visible)
+  .tags > li,
+  ul.tags > li,
+  .tags-panel ul.tags-panel-ul > li {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0;
+    display: inline-block;
+  }
+
+  // Default tag chip — SOLO sobre el <a>
   .tags a,
-  ul.tags li,
   ul.tags li > a,
+  .tags-panel a.tag-link,
   .taglist a,
   a.internal.tag-link,
   .section-li .meta a {
@@ -287,6 +371,7 @@ body > main {
     border-radius: 10px;
     font-size: 0.8em;
     text-decoration: none;
+    display: inline-block;
     transition: outline 0.12s ease, transform 0.12s ease;
 
     &:hover {
@@ -454,3 +539,239 @@ body > main {
     > ul { gap: 0.5rem; }
   }
 }
+
+// =============================================================
+//  L) SocialLinks — iconos minimalistas top of right sidebar
+// =============================================================
+
+.social-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1.2rem;
+  padding: 0 0.4rem;
+  margin: 0.5rem 0 0.5rem 0;
+  min-height: 2rem;
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  color: var(--darkgray);
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  border-radius: 4px;
+  transition: color 0.15s ease, transform 0.15s ease, filter 0.15s ease;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    fill: currentColor;
+  }
+
+  &:hover {
+    color: #d4a574 !important;
+    transform: translateY(-1px);
+    filter: drop-shadow(0 0 6px rgba(212, 165, 116, 0.35));
+    background: transparent !important;
+  }
+
+  &:focus-visible {
+    outline: 1px solid rgba(212, 165, 116, 0.6);
+    outline-offset: 2px;
+  }
+}
+
+@media (max-width: 800px) {
+  .social-links {
+    margin: 1rem 0 0.5rem 0;
+    gap: 0.9rem;
+    justify-content: center;
+  }
+}
+
+// =============================================================
+//  M) Scrollbars invisibles en sidebar.right (scroll funcional preservado)
+// =============================================================
+@media (min-width: 800px) {
+  // TOC y Backlinks
+  .page > #quartz-body > .sidebar.right ul.toc-content.overflow,
+  .page > #quartz-body > .sidebar.right .backlinks > ul.overflow {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .page > #quartz-body > .sidebar.right ul.toc-content.overflow::-webkit-scrollbar,
+  .page > #quartz-body > .sidebar.right .backlinks > ul.overflow::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  // Explorer — solo ocultar barra visualmente, NO tocar overflow
+  // (esto preserva el overflow:hidden auto default de Quartz, que
+  //  es lo que habilita el scroll por mouse wheel)
+  .page > #quartz-body > .sidebar.right .explorer-content,
+  .page > #quartz-body > .sidebar.right .explorer-content *,
+  .page > #quartz-body > .sidebar.right .explorer-ul,
+  .page > #quartz-body > .sidebar.right .explorer .folder-outer {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    scrollbar-color: transparent transparent !important;
+  }
+
+  .page > #quartz-body > .sidebar.right .explorer-content::-webkit-scrollbar,
+  .page > #quartz-body > .sidebar.right .explorer-content *::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+  }
+}
+
+// =============================================================
+//  N) Breadcrumbs sticky/fixed — PENDIENTE
+//
+//  Iteración pausada — las versiones con `position: fixed` causaban
+//  desconexión visual con el resto del layout (la barra se sentía
+//  como un bloque sobrepuesto en lugar de integrada). Retomar cuando
+//  se decida el approach final (gradient + integración con page bg,
+//  JS-based, o custom Breadcrumbs component con DOM diferente).
+// =============================================================
+
+// =============================================================
+//  O) Más uso de pantalla — wider layout + components más grandes
+//
+//  Cambios:
+//   · Page max-width: 1500px → 1700px (+200px → mejor uso de pantalla)
+//   · Sidebars: 320px → 340px (más espacio para panel content)
+//   · Panel content fonts +12%, tag chips +10%, article body +5%
+// =============================================================
+
+// Page más ancha (Quartz default es 1500px)
+.page {
+  max-width: 1800px !important;
+}
+
+// Sidebars de 340px desde 1201px (mantiene section J en rango 1024-1200)
+@media (min-width: 1201px) {
+  .page > #quartz-body {
+    grid-template-columns: 400px auto 400px !important;
+  }
+}
+
+// Panel content — fuente más compacta (~8-10% menor que original)
+// para mostrar más información por panel
+:root[saved-theme="dark"] {
+  // Recent visited links (original 0.85em → 0.78em)
+  .recent-visited li.recent-visited-li a {
+    font-size: 0.78em;
+  }
+
+  // Recent visited empty state (original 0.7em → 0.65em)
+  .recent-visited .empty-state {
+    font-size: 0.78em;
+  }
+
+  // Recent notes article title (original 0.9em → 0.83em)
+  .recent-notes ul.recent-ul > li .desc > h3 {
+    font-size: 0.78em !important;
+  }
+
+  // Recent notes meta date (original 0.7em → 0.65em)
+  .recent-notes ul.recent-ul > li .meta {
+    font-size: 0.65em;
+  }
+
+  // Tag chips (original 0.8em → 0.74em)
+  .tags a,
+  ul.tags li > a,
+  .tags-panel a.tag-link,
+  .taglist a,
+  a.internal.tag-link,
+  .section-li .meta a {
+    font-size: 0.65em;
+  }
+
+  // Headers de panel (red uppercase labels) — original 0.75em → 0.7em
+  .recent-notes > h1, .recent-notes > h2, .recent-notes > h3, .recent-notes > h4,
+  .recent-visited > h1, .recent-visited > h2, .recent-visited > h3, .recent-visited > h4,
+  .tags-panel > h1, .tags-panel > h2, .tags-panel > h3, .tags-panel > h4,
+  .explorer > h1, .explorer > h2, .explorer > h3, .explorer > h4,
+  .explorer > button h1, .explorer > button h2, .explorer > button h3,
+  button.explorer-toggle h1, button.explorer-toggle h2, button.explorer-toggle h3,
+  .toc > h1, .toc > h2, .toc > h3, .toc > h4,
+  .toc > button h1, .toc > button h2, .toc > button h3,
+  button.toc-header h1, button.toc-header h2, button.toc-header h3,
+  .backlinks > h1, .backlinks > h2, .backlinks > h3 {
+    font-size: 0.95em !important;
+  }
+}
+
+// Article body — un toque más compacto (default 1em → 0.95em)
+// con line-height más tight para mostrar más texto por pantalla
+article.popover-hint {
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+// Explorer, TOC, Backlinks — content interno (file/folder names, links)
+// Estos heredaban del body (1em). Bajamos a 0.78em para matchear
+// con los otros panels (recent-visited, etc.) y mostrar más items
+// por panel sin scroll.
+:root[saved-theme="dark"] {
+  // Explorer: folders + files (heredancia base)
+  .explorer-content {
+    font-size: 0.78em;
+  }
+
+  // Explorer: folder names tienen .95rem explícito de Quartz → override
+  .explorer .folder-container div > a,
+  .explorer .folder-container div > button span {
+    font-size: 1.1em !important;
+  }
+
+  // TOC: lista de headings de la página actual
+  ul.toc-content {
+    font-size: 0.78em;
+  }
+
+  // Backlinks: lista de notas que apuntan a la actual
+  .backlinks > ul.overflow {
+    font-size: 0.78em;
+  }
+}
+
+
+// =============================================================
+//  P) Subir contenido al top — reducir padding-top del sidebar
+//
+//  Quartz por default pone padding-top: 6rem en .sidebar (~96px
+//  de dead space arriba). Lo reducimos a 2rem para aprovechar el
+//  espacio vertical: page-title, search row, paneles — todo sube
+//  ~64px más cerca del top del viewport.
+//
+//  Aplica tanto a left como right sidebar y override sobre tu
+//  section J (que en 1024-1200px también tenía 6rem !important).
+// =============================================================
+@media (min-width: 800px) {
+  .page > #quartz-body > .sidebar.left,
+  .page > #quartz-body > .sidebar.right {
+    padding-top: 2rem !important;
+  }
+  .page > #quartz-body > .sidebar.right .backlinks {
+    min-height: 80px;
+  }
+}
+
+@media (min-width: 800px) {
+  .page > #quartz-body > .center {
+    margin-top: -3rem !important;
+  }
+}
+
+

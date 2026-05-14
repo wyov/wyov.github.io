@@ -1,19 +1,21 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
 import Fireflies from "./quartz/components/Fireflies"
+import RecentVisited from "./quartz/components/RecentVisited"
+import TagsPanel from "./quartz/components/TagsPanel"
+import SocialLinks from "./quartz/components/SocialLinks"
 
 /**
- * Layout 3-col integrado:
- *   LEFT   : page-title · search/controls · recent
- *   MAIN   : article
- *   RIGHT  : explorer · TOC · backlinks
+ * Layout — 3-column con paneles izquierdos:
+ *   LEFT  : page-title · search/controls · RecentVisited · RecentNotes · TagsPanel
+ *   MAIN  : article
+ *   RIGHT : explorer · TOC · backlinks
  */
 
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
   header: [],
   afterBody: [
-    // Escena nocturna: canvas fijo con luciérnagas + pasto + fairy dust
     Fireflies(),
   ],
   footer: Component.Footer({
@@ -23,7 +25,6 @@ export const sharedPageComponents: SharedLayout = {
   }),
 }
 
-// Posts y otras páginas de contenido
 export const defaultContentPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(),
@@ -44,20 +45,22 @@ export const defaultContentPageLayout: PageLayout = {
         { Component: Component.ReaderMode() },
       ],
     }),
+    RecentVisited(),
     Component.RecentNotes({
       limit: 5,
       showTags: false,
       filter: (f) => f.frontmatter?.draft !== true,
     }),
+    TagsPanel(),
   ],
   right: [
+    SocialLinks(),
     Component.Explorer(),
     Component.DesktopOnly(Component.TableOfContents()),
-    Component.Backlinks(),
+    Component.Backlinks({ hideWhenEmpty: false }),
   ],
 }
 
-// Folders y tag pages
 export const defaultListPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(),
@@ -76,9 +79,13 @@ export const defaultListPageLayout: PageLayout = {
         { Component: Component.Darkmode() },
       ],
     }),
+    RecentVisited(),
     Component.RecentNotes({ limit: 5, showTags: false }),
+    TagsPanel(),
   ],
   right: [
+    SocialLinks(),
     Component.Explorer(),
   ],
 }
+
