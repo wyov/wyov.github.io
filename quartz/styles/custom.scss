@@ -1,0 +1,648 @@
+@use "./base.scss";
+
+// ---------------------------------------------------------------
+//  A) Variables — palette + design tokens
+// ---------------------------------------------------------------
+:root {
+  // Catppuccin Mocha (solo las que se usan)
+  --ctp-text:     #cdd6f4;
+  --ctp-subtext0: #a6adc8;
+  --ctp-overlay1: #7f849c;
+  --ctp-green:    #a6e3a1;
+  --ctp-teal:     #94e2d5;
+
+  // Design tokens del blog
+  --w-hover:        #d4a574;
+  --w-hover-bg:     rgba(212, 165, 116, 0.08);
+  --w-hover-glow:   rgba(212, 165, 116, 0.35);
+  --w-active:       #a6e3a1;
+  --w-panel-bg:     rgba(10, 10, 10, 0.55);
+  --w-panel-border: #14413d;
+  --w-panel-h:      #c84545;
+  --w-easing:       cubic-bezier(0.4, 0, 0.2, 1);
+  --w-tr:           0.22s var(--w-easing);
+  --w-tr-fast:      0.05s var(--w-easing);
+}
+
+// ---------------------------------------------------------------
+//  SCSS placeholder — estilo de panel-headers (rojo uppercase)
+//  Reusado vía @extend para evitar duplicación de selectors
+// ---------------------------------------------------------------
+%panel-headers {
+  color: var(--w-panel-h) !important;
+  font-size: 0.95em !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  font-weight: 500 !important;
+  margin: 0 0 0.6rem !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+// ---------------------------------------------------------------
+//  B) Page-title verde + glow (dark mode only)
+// ---------------------------------------------------------------
+:root[saved-theme="dark"] .page-title,
+:root[saved-theme="dark"] .page-title a {
+  color: var(--w-active) !important;
+  text-shadow:
+    0 0 8px  rgba(166, 227, 161, 0.25),
+    0 0 18px rgba(166, 227, 161, 0.12);
+}
+
+// ---------------------------------------------------------------
+//  C) Footer charco radial
+// ---------------------------------------------------------------
+body > footer,
+footer.footer,
+.page > footer,
+.page > #quartz-body > footer {
+  position: relative;
+  z-index: 5;
+  background: transparent;
+  border: none;
+  padding: 4rem 1rem 3rem;
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.85em;
+  color: rgba(205, 214, 244, 0.72);
+  letter-spacing: 0.02em;
+  isolation: isolate;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.95), 0 1px 2px #000;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(ellipse 60% 80% at center 70%,
+      rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.55) 40%,
+      rgba(0, 0, 0, 0.2)  70%, transparent 100%);
+  }
+
+  a, p, span, ul, li { text-shadow: inherit; color: inherit; }
+
+  a {
+    color: rgba(148, 226, 213, 0.85);
+    text-decoration: none;
+    &:hover {
+      color: var(--w-hover);
+      text-decoration: underline;
+      text-decoration-color: rgba(212, 165, 116, 0.5);
+      text-underline-offset: 3px;
+    }
+  }
+
+  > ul {
+    display: inline-flex; gap: 1rem; flex-wrap: wrap;
+    list-style: none; padding: 0; margin: 0.5rem 0 0;
+    justify-content: center;
+  }
+}
+
+:root[saved-theme="light"] body > footer,
+:root[saved-theme="light"] footer.footer {
+  text-shadow: none;
+  color: var(--gray);
+  &::before { display: none; }
+  a { color: var(--secondary); }
+}
+
+
+// ----------------------------------------------
+//  D) Padding bottom global
+//
+//  Importante: el padding-bottom en #quartz-body queda FUERA del
+//  grid...
+// ----------------------------------------------
+
+body > main {
+  padding-bottom: 200px;
+}
+
+@media (max-width: 1200px) {
+  .page > #quartz-body {
+    padding-bottom: 200px;
+  }
+}
+
+@media (min-width: 1201px) {
+  .page > #quartz-body > .center {
+    padding-bottom: 200px;
+  }
+}
+
+// ---------------------------------------------------------------
+//  E) Panels — estructura compartida (light + dark)
+// ---------------------------------------------------------------
+
+// Panel boxes — dark-mode-only background catppuccin
+:root[saved-theme="dark"] {
+  .recent-notes, .recent-visited, .tags-panel,
+  .explorer, .toc, .backlinks {
+    background: var(--w-panel-bg);
+    border: 0.5px solid #1a1a1a;
+    border-left: 2px solid var(--w-panel-border);
+    border-radius: 4px;
+    padding: 0.7rem 0.9rem;
+    backdrop-filter: blur(2px);
+    margin-bottom: 1rem;
+  }
+}
+
+// Panel headers — fonts/transform aplican a AMBOS themes
+.recent-notes > h1, .recent-notes > h2, .recent-notes > h3, .recent-notes > h4,
+.recent-visited > h1, .recent-visited > h2, .recent-visited > h3, .recent-visited > h4,
+.tags-panel > h1, .tags-panel > h2, .tags-panel > h3, .tags-panel > h4,
+.explorer > h1, .explorer > h2, .explorer > h3, .explorer > h4,
+.explorer > button h1, .explorer > button h2, .explorer > button h3,
+button.explorer-toggle h1, button.explorer-toggle h2, button.explorer-toggle h3,
+.toc > h1, .toc > h2, .toc > h3, .toc > h4,
+.toc > button h1, .toc > button h2, .toc > button h3,
+button.toc-header h1, button.toc-header h2, button.toc-header h3,
+.backlinks > h1, .backlinks > h2, .backlinks > h3 {
+  @extend %panel-headers;
+}
+
+// Panel content fonts (theme-neutral)
+.recent-notes ul.recent-ul { list-style: none; padding: 0; margin: 0; }
+.recent-notes ul.recent-ul > li {
+  margin: 0 0 0.6rem; padding: 0;
+  .section, .desc { padding: 0; margin: 0; }
+  .desc > h3 {
+    font-size: 0.78em !important;
+    font-weight: 400 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    border: none !important;
+  }
+  .meta {
+    font-size: 0.65em;
+    color: var(--ctp-overlay1);
+    margin: 0 !important; padding: 0;
+    line-height: 1.3; opacity: 0.7;
+  }
+}
+
+.recent-visited ul.recent-visited-ul {
+  list-style: none; padding: 0; margin: 0;
+}
+.recent-visited li.recent-visited-li {
+  margin: 0 0 0.4rem; padding: 0; line-height: 1.4;
+  a {
+    font-size: 0.78em;
+    color: var(--ctp-text);
+    background: transparent;
+    padding: 0; display: block;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    text-decoration: none;
+  }
+}
+.recent-visited .empty-state {
+  font-size: 0.78em;
+  color: var(--ctp-overlay1);
+  opacity: 0.55;
+  font-style: italic;
+  list-style: none; padding: 0; margin: 0;
+}
+
+// Tags Panel list
+.tags-panel ul.tags-panel-ul {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-wrap: wrap; gap: 0.3rem;
+}
+.tags-panel ul.tags-panel-ul > li,
+ul.tags > li, .tags > li {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0;
+  display: inline-block;
+}
+
+// Explorer / TOC / Backlinks inner content fonts
+.explorer-content,
+ul.toc-content,
+.backlinks > ul.overflow {
+  font-size: 0.78em;
+}
+// Quartz override — folder names tienen .95rem explícito
+.explorer .folder-container div > a,
+.explorer .folder-container div > button span {
+  font-size: 1.1em !important;
+}
+
+// Item ACTIVO (página actual) en verde — dark only
+:root[saved-theme="dark"] {
+  .toc-content .in-view > a,
+  .toc-content li.active > a,
+  .toc .in-view > a,
+  .explorer .file-link[data-current="true"],
+  .explorer a[aria-current="page"],
+  .explorer .folder-outer .file[data-current="true"],
+  .recent-notes a[aria-current="page"],
+  .recent-visited a[aria-current="page"] {
+    color: var(--w-active) !important;
+    font-weight: 500;
+  }
+  .backlinks a:visited { color: rgba(166, 173, 200, 0.7); }
+
+  .recent-notes .desc > h3 > a {
+    color: var(--ctp-text);
+    text-decoration: none;
+    background: transparent;
+    padding: 0;
+  }
+}
+
+// ---------------------------------------------------------------
+//  F) Hover interactions — colores (transiciones en sección O)
+// ---------------------------------------------------------------
+:root[saved-theme="dark"] {
+  .sidebar a:not(.tag-link):hover,
+  .explorer a:not(.tag-link):hover,
+  .toc a:not(.tag-link):hover, .toc-content a:not(.tag-link):hover,
+  .backlinks a:not(.tag-link):hover,
+  .recent-notes a:not(.tag-link):hover,
+  .recent-visited a:not(.tag-link):hover {
+    color: var(--w-hover) !important;
+    background-color: var(--w-hover-bg);
+    border-radius: 3px;
+    text-decoration: none;
+  }
+
+  input[type="search"]:focus,
+  .search-bar:focus-within, .search-bar input:focus,
+  #search-bar:focus, #search-container input:focus {
+    outline: 1px solid rgba(212, 165, 116, 0.5);
+    outline-offset: 1px;
+    border-color: rgba(212, 165, 116, 0.4);
+    caret-color: var(--w-hover);
+  }
+
+  .search-result:hover, .search-result.active, .result-card:hover {
+    background-color: rgba(212, 165, 116, 0.1);
+    border-color: rgba(212, 165, 116, 0.3);
+  }
+
+  ::selection {
+    background-color: rgba(212, 165, 116, 0.25);
+    color: var(--ctp-text);
+  }
+}
+
+// ---------------------------------------------------------------
+//  G) Tags semánticos — chips + categorías por color
+// ---------------------------------------------------------------
+:root[saved-theme="dark"] {
+  // Default tag chip (sin keyword match)
+  .tags a, ul.tags li > a, .tags-panel a.tag-link,
+  .taglist a, a.internal.tag-link, .section-li .meta a {
+    background: rgba(166, 173, 200, 0.10);
+    color: var(--ctp-subtext0);
+    border: 0.5px solid rgba(166, 173, 200, 0.25);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.65em;
+    text-decoration: none;
+    display: inline-block;
+
+    // Outline explícito transparente en base — sin esto el browser
+    // anima de "outline:undefined" a "1px solid orange" y aparece
+    // un flash blanco (currentColor) en el medio de la transición
+    outline: 0 solid transparent;
+
+    &:hover {
+      outline: 1px solid var(--w-hover);
+      outline-offset: 2px;
+      transform: translateY(-1px);
+    }
+  }
+
+  // Categorías por keyword en href — generadas via @each
+  $tag-categories: (
+    (#e8856a, ("red-team" "red_team" "offensive" "exploit" "attack" "pentest" "byovd" "vulnerability" "malware" "jwt")),
+    (#89b4fa, ("/ad" "kerberos" "ldap" "auth" "identity" "sso" "okta")),
+    (#a6e3a1, ("enum" "recon" "methodology" "osint" "discovery")),
+    (#cba6f7, ("windows" "kernel" "internals" "syscall" "driver")),
+    (#fab387, ("aws" "cloud" "k8s" "kubernetes" "docker" "infra" "terraform")),
+    (#94e2d5, ("defense" "defensive" "edr" "soc" "detection" "blue-team")),
+    (#f9e2af, ("linux" "bash" "shell" "gnu" "unix" "kali" "parrot" "posix" "debian" "ubuntu")),
+  );
+
+  @each $entry in $tag-categories {
+    $color: nth($entry, 1);
+    $keywords: nth($entry, 2);
+    $selectors: ();
+    @each $kw in $keywords {
+      $selectors: append($selectors, unquote('.tags a[href*="#{$kw}"]'), comma);
+    }
+    #{$selectors} {
+      background: rgba($color, 0.13);
+      color: $color;
+      border-color: rgba($color, 0.30);
+    }
+  }
+}
+
+// ---------------------------------------------------------------
+//  H) Callouts note/info — teal
+// ---------------------------------------------------------------
+:root[saved-theme="dark"] {
+  .callout[data-callout="note"],
+  .callout[data-callout="info"] {
+    --color: var(--ctp-teal);
+    --border: var(--w-panel-border);
+  }
+}
+
+// ---------------------------------------------------------------
+//  I) Layout dimensions — page width + sidebars + top padding
+// ---------------------------------------------------------------
+.page { max-width: 1800px !important; }
+
+@media (min-width: 1201px) {
+  .page > #quartz-body {
+    grid-template-columns: 400px auto 400px !important;
+  }
+}
+
+@media (min-width: 800px) {
+  .page > #quartz-body > .sidebar.left,
+  .page > #quartz-body > .sidebar.right {
+    padding-top: 2rem !important;
+  }
+  .page > #quartz-body > .center {
+    margin-top: -3rem !important;
+  }
+  .page > #quartz-body > .sidebar.right .backlinks {
+    min-height: 80px;
+  }
+}
+
+// Article body — más compacto en desktop
+article.popover-hint {
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+// ---------------------------------------------------------------
+//  J) SocialLinks
+// ---------------------------------------------------------------
+.social-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1.2rem;
+  padding: 0 0.4rem;
+  margin: 0.5rem 0;
+  min-height: 2rem;
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  color: var(--darkgray);
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  border-radius: 4px;
+
+  svg { width: 18px; height: 18px; display: block; fill: currentColor; }
+
+  &:hover {
+    color: var(--w-hover) !important;
+    transform: translateY(-1px);
+    filter: drop-shadow(0 0 6px var(--w-hover-glow));
+    background: transparent !important;
+  }
+
+  &:focus-visible {
+    outline: 1px solid rgba(212, 165, 116, 0.6);
+    outline-offset: 2px;
+  }
+}
+
+// ---------------------------------------------------------------
+//  K) Scrollbars invisibles — global + sidebar.right (scroll preservado)
+// ---------------------------------------------------------------
+
+// Scrollbar principal del browser (toda la página).
+// scrollbar-width:none + ::-webkit-scrollbar{display:none} oculta
+// la barra sin reservar espacio, mantiene el scroll funcional
+// (rueda del mouse, teclas, trackpad, swipe).
+html, body {
+  scrollbar-width: none;        // Firefox
+  -ms-overflow-style: none;     // IE/Edge legacy
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;                // Chrome/Safari/Edge moderno
+  width: 0;
+  height: 0;
+}
+
+@media (min-width: 800px) {
+  .page > #quartz-body > .sidebar.right {
+    ul.toc-content.overflow,
+    .backlinks > ul.overflow {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    ul.toc-content.overflow::-webkit-scrollbar,
+    .backlinks > ul.overflow::-webkit-scrollbar {
+      display: none; width: 0; height: 0;
+    }
+
+    .explorer-content, .explorer-content *,
+    .explorer-ul, .explorer .folder-outer {
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+      scrollbar-color: transparent transparent !important;
+    }
+    .explorer-content::-webkit-scrollbar,
+    .explorer-content *::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important; height: 0 !important;
+      background: transparent !important;
+    }
+  }
+}
+
+// ---------------------------------------------------------------
+//  L) Lower desktop breakpoint (1024 - 1200px)
+// ---------------------------------------------------------------
+@media (min-width: 1024px) and (max-width: 1200px) {
+  .page > #quartz-body {
+    grid-template-columns: 280px auto 280px !important;
+    grid-template-areas:
+      "grid-sidebar-left grid-header grid-sidebar-right"
+      "grid-sidebar-left grid-center grid-sidebar-right"
+      "grid-sidebar-left grid-footer grid-sidebar-right" !important;
+    column-gap: 1.5rem !important;
+    row-gap: 5px !important;
+    padding: 0 !important;
+  }
+
+  .page > #quartz-body > .sidebar.right {
+    position: sticky !important;
+    height: 100vh !important;
+    flex-direction: column !important;
+    margin-right: 0 !important;
+  }
+  .page > #quartz-body > .sidebar.right > .toc { display: flex !important; }
+  .page > #quartz-body > .sidebar.right > * {
+    flex: unset !important;
+    max-height: unset !important;
+  }
+}
+
+// ---------------------------------------------------------------
+//  M) Mobile (<800px) — layout vertical + fonts más cómodas
+//
+//  En mobile Quartz pone single-column. Acá:
+//   · Article body vuelve a 1em para lectura cómoda
+//   · Paneles suben de 0.78em (chico para mobile) a 0.88em
+//   · Tag chips más grandes para tap targets (≥32px)
+//   · Spacing ajustado al menor real estate
+// ---------------------------------------------------------------
+@media (max-width: 800px) {
+  .page > #quartz-body, body > main { padding-bottom: 160px; }
+
+  :root[saved-theme="dark"] {
+    .recent-notes, .recent-visited, .tags-panel,
+    .explorer, .toc, .backlinks {
+      padding: 0.6rem 0.8rem;
+      margin-bottom: 0.8rem;
+    }
+  }
+
+  article.popover-hint {
+    font-size: 1em;
+    line-height: 1.5;
+  }
+
+  .recent-visited li.recent-visited-li a,
+  .explorer-content,
+  ul.toc-content,
+  .backlinks > ul.overflow {
+    font-size: 0.88em;
+  }
+
+  .recent-notes ul.recent-ul > li .desc > h3 {
+    font-size: 0.95em !important;
+  }
+  .recent-notes ul.recent-ul > li .meta {
+    font-size: 0.78em;
+  }
+
+  // Tag chips — más grandes para tap (target mín. 32px)
+  .tags a, ul.tags li > a, .tags-panel a.tag-link,
+  .taglist a, a.internal.tag-link, .section-li .meta a {
+    font-size: 0.85em;
+    padding: 4px 10px;
+  }
+
+  .social-links {
+    margin: 1rem 0 0.5rem 0;
+    gap: 0.9rem;
+    justify-content: center;
+  }
+
+  // Folder names del explorer — proporcional al resto
+  .explorer .folder-container div > a,
+  .explorer .folder-container div > button span {
+    font-size: 1em !important;
+  }
+}
+
+@media (max-width: 600px) {
+  body > footer, footer.footer, .page > footer {
+    padding: 2.5rem 0.8rem 2rem;
+    margin-top: 3rem;
+    font-size: 0.78em;
+    > ul { gap: 0.5rem; }
+  }
+}
+
+// ---------------------------------------------------------------
+//  N) — sección descartada
+// ---------------------------------------------------------------
+
+// ---------------------------------------------------------------
+//  O) Hover transitions fluidas — global
+//  Aplica solo en devices con hover real para no causar lag en touch
+// ---------------------------------------------------------------
+@media (hover: hover) {
+  .sidebar a, .explorer a, .toc a, .toc-content a, .backlinks a,
+  .recent-notes a, .recent-visited a, .breadcrumb-element a,
+  body > footer a, footer.footer a {
+    transition:
+      color var(--w-tr),
+      background-color var(--w-tr),
+      text-decoration-color var(--w-tr) !important;
+  }
+
+  .tags a, ul.tags li > a, .tags-panel a.tag-link,
+  .taglist a, a.internal.tag-link, .section-li .meta a {
+    transition:
+      outline var(--w-tr-fast),
+      outline-color var(--w-tr-fast),
+      outline-offset var(--w-tr-fast),
+      transform var(--w-tr-fast),
+      color var(--w-tr-fast),
+      background-color var(--w-tr-fast) !important;
+  }
+
+  .social-link {
+    transition:
+      color 0.25s var(--w-easing),
+      transform 0.25s var(--w-easing),
+      filter 0.25s var(--w-easing) !important;
+  }
+
+  article a, article.popover-hint a {
+    transition:
+      color var(--w-tr),
+      background-color var(--w-tr),
+      border-color var(--w-tr) !important;
+  }
+
+  input[type="search"], .search-bar input,
+  #search-bar, #search-container input {
+    transition:
+      outline var(--w-tr),
+      border-color var(--w-tr) !important;
+  }
+
+  .search-result, .result-card {
+    transition:
+      background-color var(--w-tr),
+      border-color var(--w-tr) !important;
+  }
+}
+
+
+// ---------------------------------------------------------------
+//  P) Clipboard button — botón de copiar en code blocks
+//
+//  Quartz default: padding 0.4rem + SVG sin tamaño → resulta ~24px,
+//  desproporcionado vs el font del código (~13-14px). Lo reducimos
+//  a ~16px total para que se vea integrado al code block.
+// ---------------------------------------------------------------
+.clipboard-button {
+  padding: 0.2rem !important;
+  margin: 0.25rem !important;
+  border-radius: 4px !important;
+}
+
+.clipboard-button > svg {
+  width: 13px;
+  height: 13px;
+}
