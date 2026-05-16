@@ -1,6 +1,6 @@
 const CONFIG = {
   // ----- Luciérnagas -----
-  fireflyCount: window.innerWidth < 600 ? 5 : 9,    // v4.1: mitad (era 10/18)
+  fireflyCount: window.innerWidth < 600 ? 3 : 5,    // v4.6: mitad (era 5/9)
   fireflyColors: ["#f9e2af", "#fab387", "#f5e0dc"],
   fireflyAreaTop: 0.30,
 
@@ -8,7 +8,7 @@ const CONFIG = {
   grassBlades: window.innerWidth < 600 ? 180 : 320,
 
   // ----- Fairy dust -----
-  fairyDustCount: window.innerWidth < 600 ? 18 : 35,    // v4.4: mitad (era 35/70)
+  fairyDustCount: window.innerWidth < 600 ? 9 : 18,    // v4.6: mitad (era 18/35)
   fairyDustColors: ["#cba6f7", "#b4befe", "#f5c2e7", "#c8a4ec"],
   fairyDustMaxOpacity: 0.55,
 }
@@ -30,6 +30,41 @@ const STONE_COLORS = [
   "#5a5654", "#48423e",              // gris-marrón
   "#3e4244", "#4e5254",              // gris-azulado
 ]
+
+// -----------------------------------------------------------
+// Estado preservado entre SPA navigations.
+//   - Fireflies y dust: NO se reinician al navegar entre páginas
+//     dentro del blog. Sensación atmosférica continua, como si
+//     las luciérnagas y el polvo "vivieran" en el aire del sitio.
+//   - Grass y stones: se REGENERAN PARCIALMENTE en cada nav.
+//     1/5 (20%) se reemplaza con elementos frescos, 4/5 (80%)
+//     persiste. Transición suave entre páginas en vez de un
+//     "swap" completo del paisaje.
+//   - Full page refresh (F5/Ctrl+R): el contexto JS muere, estas
+//     vars se reinicializan a null → todo se crea desde cero.
+// -----------------------------------------------------------
+let persistedFireflies: any[] | null = null
+let persistedDust: any[] | null = null
+let persistedGrass: any[] | null = null
+let persistedStones: any[] | null = null
+
+// partialReplace — reemplaza ratio*N elementos aleatorios de `base`
+// con los primeros ratio*N elementos de `fresh`. El resto del array
+// persiste tal cual. Usado para grass y stones en cada nav event.
+function partialReplace<T>(base: T[], fresh: T[], ratio: number): T[] {
+  const total = base.length
+  const toReplace = Math.floor(total * ratio)
+  if (toReplace <= 0 || fresh.length < toReplace) return base.slice()
+  const result = base.slice()
+  const used = new Set<number>()
+  for (let i = 0; i < toReplace; i++) {
+    let idx: number
+    do { idx = Math.floor(Math.random() * total) } while (used.has(idx))
+    used.add(idx)
+    result[idx] = fresh[i]
+  }
+  return result
+}
 
 document.addEventListener("nav", () => {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
@@ -318,7 +353,7 @@ document.addEventListener("nav", () => {
       else if (r < 0.8) layer = 2
       else layer = 3
 
-      const baseHeight = 15 + Math.random() * 35
+      const baseHeight = 20 + Math.random() * 55   // v4.6: punto medio entre v4.0 halved (15+35) y original (30+70)
       const isSpike = Math.random() < 0.05
       const height = baseHeight * layerHeights[layer] * (isSpike ? 1.6 : 1)
       const colorBias = Math.random()
@@ -449,7 +484,8 @@ document.addEventListener("nav", () => {
     }
   }
 
-  let fireflies = Array.from({ length: CONFIG.fireflyCount }, () => createFirefly(false))
+  let fireflies: Firefly[] = persistedFireflies ?? Array.from({ length: CONFIG.fireflyCount }, () => createFirefly(false))
+  persistedFireflies = fireflies
 
   function updateFirefly(f: Firefly, _t: number) {
     f.angle += f.angleSpeed
@@ -546,7 +582,8 @@ document.addEventListener("nav", () => {
     }
   }
 
-  let dust = Array.from({ length: CONFIG.fairyDustCount }, () => createDust())
+  let dust: Dust[] = persistedDust ?? Array.from({ length: CONFIG.fairyDustCount }, () => createDust())
+  persistedDust = dust
 
   function updateDust(d: Dust) {
     d.x += d.vx
@@ -611,6 +648,7 @@ document.addEventListener("nav", () => {
 
     // -----------------------------------------------------------
     //  Orden de capas (back → front):
+    //
     //   1. Fairy dust         — fondo, partículas
     //   2. Path gradient      — strip earth-tone (con fade en bordes)
     //   3. Grass BACK (0-1)   — briznas cortas DETRÁS de piedras
@@ -637,6 +675,23 @@ document.addEventListener("nav", () => {
   }
 
   resize()
+
+  // Partial replace de paisaje (1/5 cambia, 4/5 persiste entre navs).
+  // resize() acaba de crear grass y stones frescos en su totalidad.
+  // Si hay arrays persistidos (de nav previo) con el mismo length,
+  // mezclamos: tomamos los persistidos como base, reemplazamos solo
+  // 20% con elementos del array fresco. Si length difiere (cruce de
+  // breakpoint, etc.) o no hay persistido, usamos lo fresco entero.
+  if (persistedGrass && persistedGrass.length === grass.length) {
+    grass = partialReplace(persistedGrass, grass, 0.2)
+    grass.sort((a, b) => a.layer - b.layer)   // re-sort para draw order correcto
+  }
+  persistedGrass = grass
+
+  if (persistedStones && persistedStones.length === stones.length) {
+    stones = partialReplace(persistedStones, stones, 0.2)
+  }
+  persistedStones = stones
 
   const onVisibility = () => { isVisible = !document.hidden }
   document.addEventListener("visibilitychange", onVisibility)
