@@ -300,12 +300,12 @@ ul.toc-content,
 
   $tag-categories: (
     (#e8856a, ("red-team" "red_team" "offensive" "exploit" "attack" "pentest" "byovd" "vulnerability" "malware" "jwt")),
-    (#89b4fa, ("/ad" "kerberos" "ldap" "auth" "identity" "sso" "okta")),
-    (#a6e3a1, ("enum" "recon" "methodology" "osint" "discovery")),
-    (#cba6f7, ("windows" "kernel" "internals" "syscall" "driver")),
+    (#89b4fa, ("ad" "kerberos" "ldap" "auth" "identity" "sso" "okta")),
+    (#a6e3a1, ("hackthebox" "easy" "enum" "recon" "methodology" "osint" "discovery")),
+    (#cba6f7, ("windows" "kernel" "internals" "syscall" "driver" "web")),
     (#fab387, ("aws" "cloud" "k8s" "kubernetes" "docker" "infra" "terraform")),
-    (#94e2d5, ("defense" "defensive" "edr" "soc" "detection" "blue-team")),
-    (#f9e2af, ("linux" "bash" "shell" "gnu" "unix" "kali" "parrot" "posix" "debian" "ubuntu")),
+    (#94e2d5, ("writeup" "defense" "defensive" "edr" "soc" "detection" "blue-team")),
+    (#f9e2af, ("medium" "linux" "bash" "shell" "gnu" "unix" "kali" "parrot" "posix" "debian" "ubuntu")),
   );
 
   @each $entry in $tag-categories {
