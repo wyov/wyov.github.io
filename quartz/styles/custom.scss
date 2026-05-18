@@ -1,17 +1,13 @@
 @use "./base.scss";
 
-// ---------------------------------------------------------------
-//  A) Variables — palette + design tokens
-// ---------------------------------------------------------------
+// A) Variables -----------------------------------------------------
 :root {
-  // Catppuccin Mocha (solo las que se usan)
   --ctp-text:     #cdd6f4;
   --ctp-subtext0: #a6adc8;
   --ctp-overlay1: #7f849c;
   --ctp-green:    #a6e3a1;
   --ctp-teal:     #94e2d5;
 
-  // Design tokens del blog
   --w-hover:        #d4a574;
   --w-hover-bg:     rgba(212, 165, 116, 0.08);
   --w-hover-glow:   rgba(212, 165, 116, 0.35);
@@ -24,10 +20,6 @@
   --w-tr-fast:      0.05s var(--w-easing);
 }
 
-// ---------------------------------------------------------------
-//  SCSS placeholder — estilo de panel-headers (rojo uppercase)
-//  Reusado vía @extend para evitar duplicación de selectors
-// ---------------------------------------------------------------
 %panel-headers {
   color: var(--w-panel-h) !important;
   font-size: 0.95em !important;
@@ -39,9 +31,7 @@
   border: none !important;
 }
 
-// ---------------------------------------------------------------
-//  B) Page-title verde + glow (dark mode only)
-// ---------------------------------------------------------------
+// B) Page title verde + glow (dark) -------------------------------
 :root[saved-theme="dark"] .page-title,
 :root[saved-theme="dark"] .page-title a {
   color: var(--w-active) !important;
@@ -50,9 +40,7 @@
     0 0 18px rgba(166, 227, 161, 0.12);
 }
 
-// ---------------------------------------------------------------
-//  C) Footer charco radial
-// ---------------------------------------------------------------
+// C) Footer charco radial -----------------------------------------
 body > footer,
 footer.footer,
 .page > footer,
@@ -109,35 +97,17 @@ footer.footer,
   a { color: var(--secondary); }
 }
 
-
-// ----------------------------------------------
-//  D) Padding bottom global
-//
-//  Importante: el padding-bottom en #quartz-body queda FUERA del
-//  grid...
-// ----------------------------------------------
-
-body > main {
-  padding-bottom: 200px;
-}
+// D) Padding bottom global ----------------------------------------
+body > main { padding-bottom: 200px; }
 
 @media (max-width: 1200px) {
-  .page > #quartz-body {
-    padding-bottom: 200px;
-  }
+  .page > #quartz-body { padding-bottom: 200px; }
 }
-
 @media (min-width: 1201px) {
-  .page > #quartz-body > .center {
-    padding-bottom: 200px;
-  }
+  .page > #quartz-body > .center { padding-bottom: 200px; }
 }
 
-// ---------------------------------------------------------------
-//  E) Panels — estructura compartida (light + dark)
-// ---------------------------------------------------------------
-
-// Panel boxes — dark-mode-only background catppuccin
+// E) Panels --------------------------------------------------------
 :root[saved-theme="dark"] {
   .recent-notes, .recent-visited, .tags-panel,
   .explorer, .toc, .backlinks {
@@ -151,7 +121,6 @@ body > main {
   }
 }
 
-// Panel headers — fonts/transform aplican a AMBOS themes
 .recent-notes > h1, .recent-notes > h2, .recent-notes > h3, .recent-notes > h4,
 .recent-visited > h1, .recent-visited > h2, .recent-visited > h3, .recent-visited > h4,
 .tags-panel > h1, .tags-panel > h2, .tags-panel > h3, .tags-panel > h4,
@@ -165,7 +134,6 @@ button.toc-header h1, button.toc-header h2, button.toc-header h3,
   @extend %panel-headers;
 }
 
-// Panel content fonts (theme-neutral)
 .recent-notes ul.recent-ul { list-style: none; padding: 0; margin: 0; }
 .recent-notes ul.recent-ul > li {
   margin: 0 0 0.6rem; padding: 0;
@@ -187,9 +155,7 @@ button.toc-header h1, button.toc-header h2, button.toc-header h3,
   }
 }
 
-.recent-visited ul.recent-visited-ul {
-  list-style: none; padding: 0; margin: 0;
-}
+.recent-visited ul.recent-visited-ul { list-style: none; padding: 0; margin: 0; }
 .recent-visited li.recent-visited-li {
   margin: 0 0 0.4rem; padding: 0; line-height: 1.4;
   a {
@@ -209,11 +175,36 @@ button.toc-header h1, button.toc-header h2, button.toc-header h3,
   list-style: none; padding: 0; margin: 0;
 }
 
-// Tags Panel list
+// Tags panel — flex column con header fijo, ul scrolleable.
+// min-height: 0 en el ul es crítico para que flex children se contraigan.
+.tags-panel {
+  display: flex !important;
+  flex-direction: column !important;
+  max-height: 250px !important;
+  overflow: hidden !important;
+
+  > h1, > h2, > h3, > h4 { flex: 0 0 auto !important; }
+}
+
 .tags-panel ul.tags-panel-ul {
   list-style: none; padding: 0; margin: 0;
   display: flex; flex-wrap: wrap; gap: 0.3rem;
+
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+
+  &::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
 }
+
 .tags-panel ul.tags-panel-ul > li,
 ul.tags > li, .tags > li {
   background: transparent !important;
@@ -223,19 +214,13 @@ ul.tags > li, .tags > li {
   display: inline-block;
 }
 
-// Explorer / TOC / Backlinks inner content fonts
 .explorer-content,
 ul.toc-content,
-.backlinks > ul.overflow {
-  font-size: 0.78em;
-}
-// Quartz override — folder names tienen .95rem explícito
-.explorer .folder-container div > a,
-.explorer .folder-container div > button span {
-  font-size: 1.1em !important;
-}
+.backlinks > ul.overflow { font-size: 0.78em; }
 
-// Item ACTIVO (página actual) en verde — dark only
+.explorer .folder-container div > a,
+.explorer .folder-container div > button span { font-size: 1.1em !important; }
+
 :root[saved-theme="dark"] {
   .toc-content .in-view > a,
   .toc-content li.active > a,
@@ -258,9 +243,7 @@ ul.toc-content,
   }
 }
 
-// ---------------------------------------------------------------
-//  F) Hover interactions — colores (transiciones en sección O)
-// ---------------------------------------------------------------
+// F) Hover interactions (colores; transiciones en O) --------------
 :root[saved-theme="dark"] {
   .sidebar a:not(.tag-link):hover,
   .explorer a:not(.tag-link):hover,
@@ -294,11 +277,8 @@ ul.toc-content,
   }
 }
 
-// ---------------------------------------------------------------
-//  G) Tags semánticos — chips + categorías por color
-// ---------------------------------------------------------------
+// G) Tags semánticos — chips + categorías por color ---------------
 :root[saved-theme="dark"] {
-  // Default tag chip (sin keyword match)
   .tags a, ul.tags li > a, .tags-panel a.tag-link,
   .taglist a, a.internal.tag-link, .section-li .meta a {
     background: rgba(166, 173, 200, 0.10);
@@ -309,10 +289,6 @@ ul.toc-content,
     font-size: 0.65em;
     text-decoration: none;
     display: inline-block;
-
-    // Outline explícito transparente en base — sin esto el browser
-    // anima de "outline:undefined" a "1px solid orange" y aparece
-    // un flash blanco (currentColor) en el medio de la transición
     outline: 0 solid transparent;
 
     &:hover {
@@ -322,7 +298,6 @@ ul.toc-content,
     }
   }
 
-  // Categorías por keyword en href — generadas via @each
   $tag-categories: (
     (#e8856a, ("red-team" "red_team" "offensive" "exploit" "attack" "pentest" "byovd" "vulnerability" "malware" "jwt")),
     (#89b4fa, ("/ad" "kerberos" "ldap" "auth" "identity" "sso" "okta")),
@@ -348,9 +323,7 @@ ul.toc-content,
   }
 }
 
-// ---------------------------------------------------------------
-//  H) Callouts note/info — teal
-// ---------------------------------------------------------------
+// H) Callouts note/info — teal ------------------------------------
 :root[saved-theme="dark"] {
   .callout[data-callout="note"],
   .callout[data-callout="info"] {
@@ -359,9 +332,7 @@ ul.toc-content,
   }
 }
 
-// ---------------------------------------------------------------
-//  I) Layout dimensions — page width + sidebars + top padding
-// ---------------------------------------------------------------
+// I) Layout dimensions + article body -----------------------------
 .page { max-width: 1800px !important; }
 
 @media (min-width: 1201px) {
@@ -372,26 +343,37 @@ ul.toc-content,
 
 @media (min-width: 800px) {
   .page > #quartz-body > .sidebar.left,
-  .page > #quartz-body > .sidebar.right {
-    padding-top: 2rem !important;
-  }
-  .page > #quartz-body > .center {
-    margin-top: -3rem !important;
-  }
-  .page > #quartz-body > .sidebar.right .backlinks {
-    min-height: 80px;
-  }
+  .page > #quartz-body > .sidebar.right { padding-top: 2rem !important; }
+  .page > #quartz-body > .center { margin-top: -3rem !important; }
+  .page > #quartz-body > .sidebar.right .backlinks { min-height: 80px; }
 }
 
-// Article body — más compacto en desktop
 article.popover-hint {
   font-size: 0.9em;
-  line-height: 1.4;
+  line-height: 1.5;
+
+  // Texto justificado solo en párrafos del cuerpo.
+  p {
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+  }
+
+  // Reset justify en código (block e inline)
+  pre, pre *, code,
+  figure:has(> pre),
+  figure[data-rehype-pretty-code-figure],
+  p:has(> code:only-child) {
+    text-align: left !important;
+    hyphens: none !important;
+    -webkit-hyphens: none !important;
+    -ms-hyphens: none !important;
+  }
 }
 
-// ---------------------------------------------------------------
-//  J) SocialLinks
-// ---------------------------------------------------------------
+// J) SocialLinks --------------------------------------------------
 .social-links {
   display: flex;
   align-items: center;
@@ -429,23 +411,15 @@ article.popover-hint {
   }
 }
 
-// ---------------------------------------------------------------
-//  K) Scrollbars invisibles — global + sidebar.right (scroll preservado)
-// ---------------------------------------------------------------
-
-// Scrollbar principal del browser (toda la página).
-// scrollbar-width:none + ::-webkit-scrollbar{display:none} oculta
-// la barra sin reservar espacio, mantiene el scroll funcional
-// (rueda del mouse, teclas, trackpad, swipe).
+// K) Scrollbars invisibles ----------------------------------------
 html, body {
-  scrollbar-width: none;        // Firefox
-  -ms-overflow-style: none;     // IE/Edge legacy
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
-  display: none;                // Chrome/Safari/Edge moderno
-  width: 0;
-  height: 0;
+  display: none;
+  width: 0; height: 0;
 }
 
 @media (min-width: 800px) {
@@ -475,9 +449,7 @@ body::-webkit-scrollbar {
   }
 }
 
-// ---------------------------------------------------------------
-//  L) Lower desktop breakpoint (1024 - 1200px)
-// ---------------------------------------------------------------
+// L) Lower desktop breakpoint (1024-1200px) -----------------------
 @media (min-width: 1024px) and (max-width: 1200px) {
   .page > #quartz-body {
     grid-template-columns: 280px auto 280px !important;
@@ -503,15 +475,7 @@ body::-webkit-scrollbar {
   }
 }
 
-// ---------------------------------------------------------------
-//  M) Mobile (<800px) — layout vertical + fonts más cómodas
-//
-//  En mobile Quartz pone single-column. Acá:
-//   · Article body vuelve a 1em para lectura cómoda
-//   · Paneles suben de 0.78em (chico para mobile) a 0.88em
-//   · Tag chips más grandes para tap targets (≥32px)
-//   · Spacing ajustado al menor real estate
-// ---------------------------------------------------------------
+// M) Mobile (<800px) ----------------------------------------------
 @media (max-width: 800px) {
   .page > #quartz-body, body > main { padding-bottom: 160px; }
 
@@ -526,28 +490,29 @@ body::-webkit-scrollbar {
   article.popover-hint {
     font-size: 1em;
     line-height: 1.5;
+
+    p { text-align: left; hyphens: manual; }
+
+    h2 { margin-top: 1.5rem !important; margin-bottom: 0.6rem !important; }
+    h3 { margin-top: 1.2rem !important; margin-bottom: 0.5rem !important; }
+    h4 { margin-top: 1rem   !important; margin-bottom: 0.4rem !important; }
   }
 
   .recent-visited li.recent-visited-li a,
   .explorer-content,
   ul.toc-content,
-  .backlinks > ul.overflow {
-    font-size: 0.88em;
-  }
+  .backlinks > ul.overflow { font-size: 0.88em; }
 
-  .recent-notes ul.recent-ul > li .desc > h3 {
-    font-size: 0.95em !important;
-  }
-  .recent-notes ul.recent-ul > li .meta {
-    font-size: 0.78em;
-  }
+  .recent-notes ul.recent-ul > li .desc > h3 { font-size: 0.95em !important; }
+  .recent-notes ul.recent-ul > li .meta { font-size: 0.78em; }
 
-  // Tag chips — más grandes para tap (target mín. 32px)
   .tags a, ul.tags li > a, .tags-panel a.tag-link,
   .taglist a, a.internal.tag-link, .section-li .meta a {
     font-size: 0.85em;
     padding: 4px 10px;
   }
+
+  .tags-panel { max-height: 320px !important; }
 
   .social-links {
     margin: 1rem 0 0.5rem 0;
@@ -555,11 +520,8 @@ body::-webkit-scrollbar {
     justify-content: center;
   }
 
-  // Folder names del explorer — proporcional al resto
   .explorer .folder-container div > a,
-  .explorer .folder-container div > button span {
-    font-size: 1em !important;
-  }
+  .explorer .folder-container div > button span { font-size: 1em !important; }
 }
 
 @media (max-width: 600px) {
@@ -571,14 +533,54 @@ body::-webkit-scrollbar {
   }
 }
 
-// ---------------------------------------------------------------
-//  N) — sección descartada
-// ---------------------------------------------------------------
+// N) Article images -----------------------------------------------
+article.popover-hint {
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
 
-// ---------------------------------------------------------------
-//  O) Hover transitions fluidas — global
-//  Aplica solo en devices con hover real para no causar lag en touch
-// ---------------------------------------------------------------
+  p > img:only-child,
+  figure > img {
+    display: block;
+    margin: 1.5rem auto;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+    transition: transform 0.3s var(--w-easing),
+                filter 0.3s var(--w-easing),
+                box-shadow 0.3s var(--w-easing);
+
+    @media (hover: hover) {
+      &:hover {
+        transform: scale(1.005);
+        filter: brightness(1.05);
+        box-shadow: 0 6px 22px rgba(0, 0, 0, 0.55);
+      }
+    }
+  }
+
+  figure {
+    text-align: center;
+    margin: 1.5rem auto;
+
+    figcaption {
+      font-size: 0.85em;
+      color: var(--ctp-subtext0);
+      margin-top: 0.6rem;
+      font-style: italic;
+    }
+  }
+}
+
+@media (max-width: 800px) {
+  article.popover-hint p > img:only-child,
+  article.popover-hint figure > img {
+    margin: 1rem auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  }
+}
+
+// O) Hover transitions (solo en hover real) -----------------------
 @media (hover: hover) {
   .sidebar a, .explorer a, .toc a, .toc-content a, .backlinks a,
   .recent-notes a, .recent-visited a, .breadcrumb-element a,
@@ -616,26 +618,15 @@ body::-webkit-scrollbar {
 
   input[type="search"], .search-bar input,
   #search-bar, #search-container input {
-    transition:
-      outline var(--w-tr),
-      border-color var(--w-tr) !important;
+    transition: outline var(--w-tr), border-color var(--w-tr) !important;
   }
 
   .search-result, .result-card {
-    transition:
-      background-color var(--w-tr),
-      border-color var(--w-tr) !important;
+    transition: background-color var(--w-tr), border-color var(--w-tr) !important;
   }
 }
 
-
-// ---------------------------------------------------------------
-//  P) Clipboard button — botón de copiar en code blocks
-//
-//  Quartz default: padding 0.4rem + SVG sin tamaño → resulta ~24px,
-//  desproporcionado vs el font del código (~13-14px). Lo reducimos
-//  a ~16px total para que se vea integrado al code block.
-// ---------------------------------------------------------------
+// P) Clipboard button (en code blocks) ----------------------------
 .clipboard-button {
   padding: 0.2rem !important;
   margin: 0.25rem !important;
@@ -645,4 +636,102 @@ body::-webkit-scrollbar {
 .clipboard-button > svg {
   width: 13px;
   height: 13px;
+}
+
+// Q) Tipografía polish — headers, inline code, listas, etc. ------
+article.popover-hint {
+  // Header spacing escalonado por jerarquía
+  h2 { margin-top: 2.2rem !important; margin-bottom: 0.8rem !important; }
+  h3 { margin-top: 1.8rem !important; margin-bottom: 0.6rem !important; }
+  h4 { margin-top: 1.4rem !important; margin-bottom: 0.5rem !important; }
+
+  > h2:first-of-type,
+  > h2:first-child { margin-top: 1rem !important; }
+
+  // Inline code (`comando`) — teal sutil, distinguible sin estridencia
+  code {
+    background: rgba(148, 226, 213, 0.08);
+    color: var(--ctp-teal);
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+    font-size: 0.88em;
+    border: 0.5px solid rgba(148, 226, 213, 0.18);
+    font-family: 'JetBrains Mono', 'Fira Code', 'Monaco', monospace;
+  }
+
+  // Reset para code blocks (heredarían lo de arriba)
+  pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    border-radius: 0;
+    border: none;
+    font-size: inherit;
+    font-family: inherit;
+  }
+
+  // Pre con scroll horizontal invisible
+  pre {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar { display: none; width: 0; height: 0; }
+  }
+
+  // Listas con más aire entre items
+  ul, ol {
+    padding-left: 1.6rem;
+    margin: 0.8rem 0;
+
+    li {
+      margin-bottom: 0.4rem;
+      &:last-child { margin-bottom: 0; }
+    }
+
+    ul, ol { margin-top: 0.4rem; margin-bottom: 0.4rem; }
+  }
+
+  // Blockquote (> markdown). No afecta callouts.
+  blockquote {
+    margin: 1.5rem 0;
+    padding: 0.6rem 1rem;
+    border-left: 3px solid rgba(148, 226, 213, 0.4);
+    background: rgba(148, 226, 213, 0.04);
+    border-radius: 0 4px 4px 0;
+    color: var(--ctp-subtext0);
+
+    p {
+      text-align: left !important;
+      margin: 0;
+      &:not(:last-child) { margin-bottom: 0.5rem; }
+    }
+  }
+
+  hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right,
+      transparent, rgba(127, 132, 156, 0.3), transparent);
+    margin: 2.5rem 0;
+  }
+}
+
+// R) Navegación — smooth scroll + oculta anchor icons de Quartz ---
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+article.popover-hint {
+  h1, h2, h3, h4, h5, h6 { scroll-margin-top: 2rem; }
+
+  // Oculta los iconos de anchor/cadena que Quartz inyecta en headers.
+  // Cubre los selectors comunes de rehype-autolink-headings.
+  :is(h1, h2, h3, h4, h5, h6) {
+    > a svg,
+    > a.heading-anchor,
+    > a[aria-hidden="true"],
+    .heading-link-icon,
+    .anchor-icon {
+      display: none !important;
+    }
+  }
 }
