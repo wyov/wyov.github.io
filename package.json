@@ -114,8 +114,9 @@
   "overrides": {
     "brace-expansion": "^5.0.8",
     "fflate": "0.7.5",
+    "katex": "^0.18.2",
     "rehype-mathjax": {
-        "@xmldom/xmldom": "0.9.12"
+      "@xmldom/xmldom": "0.9.12"
     }
   }
 }
