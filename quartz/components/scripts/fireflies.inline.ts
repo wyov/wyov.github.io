@@ -86,24 +86,14 @@ document.addEventListener("nav", () => {
     const parent = canvas!.parentElement
     if (!parent) return
     const rect = parent.getBoundingClientRect()
-    const dpr = window.devicePixelRatio || 1
-    // la barra del navegador móvil dispara resize sin cambiar el tamaño del canvas
-    if (rect.width === W && rect.height === H && dpr === DPR) return
-    const sameWidth = rect.width === W && dpr === DPR
-    const dy = rect.height - H
     W = rect.width
     H = rect.height
-    DPR = dpr
-    // buffer en píxeles enteros del dispositivo: sin reescalado con DPR fraccionario
-    canvas!.width = Math.round(W * DPR)
-    canvas!.height = Math.round(H * DPR)
-    canvas!.style.width = canvas!.width / DPR + "px"
-    canvas!.style.height = canvas!.height / DPR + "px"
+    DPR = window.devicePixelRatio || 1
+    canvas!.width = W * DPR
+    canvas!.height = H * DPR
+    canvas!.style.width = W + "px"
+    canvas!.style.height = H + "px"
     ctx!.setTransform(DPR, 0, 0, DPR, 0, 0)
-    if (sameWidth) {
-      for (const s of stones) s.y += dy
-      return
-    }
     // Orden importa: pathBounds + pathFadeWidth listos antes de createGrass
     pathBounds = getPathBounds()
     const pathW = pathBounds.right - pathBounds.left
