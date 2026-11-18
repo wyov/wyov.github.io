@@ -10,6 +10,7 @@ import SocialLinks from "./quartz/components/SocialLinks"
  *   LEFT  : page-title · search/controls · RecentVisited · RecentNotes · TagsPanel
  *   MAIN  : article
  *   RIGHT : explorer · TOC · backlinks
+ *   MÓVIL : ☰ explorer en la barra superior · paneles debajo del artículo
  */
 
 export const sharedPageComponents: SharedLayout = {
@@ -45,19 +46,31 @@ export const defaultContentPageLayout: PageLayout = {
         { Component: Component.ReaderMode() },
       ],
     }),
-    RecentVisited(),
-    Component.RecentNotes({
-      limit: 5,
-      showTags: false,
-      filter: (f) => f.frontmatter?.draft !== true,
-    }),
-    TagsPanel(),
+    Component.MobileOnly(Component.Explorer()),
+    Component.DesktopOnly(RecentVisited()),
+    Component.DesktopOnly(
+      Component.RecentNotes({
+        limit: 5,
+        showTags: false,
+        filter: (f) => f.frontmatter?.draft !== true,
+      }),
+    ),
+    Component.DesktopOnly(TagsPanel()),
   ],
   right: [
     SocialLinks(),
-    Component.Explorer(),
+    Component.DesktopOnly(Component.Explorer()),
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks({ hideWhenEmpty: false }),
+    Component.MobileOnly(RecentVisited()),
+    Component.MobileOnly(
+      Component.RecentNotes({
+        limit: 5,
+        showTags: false,
+        filter: (f) => f.frontmatter?.draft !== true,
+      }),
+    ),
+    Component.MobileOnly(TagsPanel()),
   ],
 }
 
@@ -79,13 +92,17 @@ export const defaultListPageLayout: PageLayout = {
         { Component: Component.Darkmode() },
       ],
     }),
-    RecentVisited(),
-    Component.RecentNotes({ limit: 5, showTags: false }),
-    TagsPanel(),
+    Component.MobileOnly(Component.Explorer()),
+    Component.DesktopOnly(RecentVisited()),
+    Component.DesktopOnly(Component.RecentNotes({ limit: 5, showTags: false })),
+    Component.DesktopOnly(TagsPanel()),
   ],
   right: [
     SocialLinks(),
-    Component.Explorer(),
+    Component.DesktopOnly(Component.Explorer()),
+    Component.MobileOnly(RecentVisited()),
+    Component.MobileOnly(Component.RecentNotes({ limit: 5, showTags: false })),
+    Component.MobileOnly(TagsPanel()),
   ],
 }
 

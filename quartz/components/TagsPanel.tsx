@@ -1,5 +1,6 @@
 import { FullSlug, resolveRelative } from "../util/path"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
+import { classNames } from "../util/lang"
 
 /**
  * TagsPanel — lista de todos los tags del sitio
@@ -7,7 +8,7 @@ import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } fro
  * Se renderiza en build-time. Cada tag muestra su nombre y va al
  * /tags/<tag> page. Ordenado por frecuencia descendente.
  */
-const TagsPanel: QuartzComponent = ({ fileData, allFiles }: QuartzComponentProps) => {
+const TagsPanel: QuartzComponent = ({ fileData, allFiles, displayClass }: QuartzComponentProps) => {
   // Contar frecuencia de cada tag
   const tagCounts = new Map<string, number>()
   for (const file of allFiles) {
@@ -27,7 +28,7 @@ const TagsPanel: QuartzComponent = ({ fileData, allFiles }: QuartzComponentProps
   }
 
   return (
-    <div class="tags-panel">
+    <div class={classNames(displayClass, "tags-panel")}>
       <h3>Tags</h3>
       <ul class="tags-panel-ul tags">
         {sortedTags.map(([tag, count]) => {

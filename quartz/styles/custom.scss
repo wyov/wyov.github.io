@@ -1,4 +1,6 @@
 @use "./base.scss";
+@use "sass:list";
+@use "sass:string";
 
 // A) Variables -----------------------------------------------------
 :root {
@@ -89,12 +91,19 @@ footer.footer,
   }
 }
 
+// incluye el selector real del footer de Quartz
 :root[saved-theme="light"] body > footer,
-:root[saved-theme="light"] footer.footer {
+:root[saved-theme="light"] footer.footer,
+:root[saved-theme="light"] .page > #quartz-body > footer {
   text-shadow: none;
   color: var(--gray);
   &::before { display: none; }
   a { color: var(--secondary); }
+}
+
+// móvil + tablet: min-width 100% + padding desbordaba 16px
+@media (max-width: 1023px) {
+  .page > #quartz-body > footer { box-sizing: border-box; }
 }
 
 // D) Padding bottom global ----------------------------------------
@@ -120,6 +129,11 @@ body > main { padding-bottom: 200px; }
     margin-bottom: 1rem;
   }
 }
+
+// DesktopOnly/MobileOnly: explorer y tags-panel traen su propio display
+.explorer.desktop-only { display: flex; }
+.explorer.mobile-only { display: none; }
+.tags-panel.mobile-only { display: none !important; }
 
 .recent-notes > h1, .recent-notes > h2, .recent-notes > h3, .recent-notes > h4,
 .recent-visited > h1, .recent-visited > h2, .recent-visited > h3, .recent-visited > h4,
@@ -313,11 +327,11 @@ ul.toc-content,
   );
 
   @each $entry in $tag-categories {
-    $color: nth($entry, 1);
-    $keywords: nth($entry, 2);
+    $color: list.nth($entry, 1);
+    $keywords: list.nth($entry, 2);
     $selectors: ();
     @each $kw in $keywords {
-      $selectors: append($selectors, unquote('.tags a[href*="#{$kw}"]'), comma);
+      $selectors: list.append($selectors, string.unquote('.tags a[href*="#{$kw}"]'), comma);
     }
     #{$selectors} {
       background: rgba($color, 0.13);
@@ -355,6 +369,9 @@ ul.toc-content,
 article.popover-hint {
   font-size: 0.9em;
   line-height: 1.5;
+
+  // URLs y rutas largas cortan línea en vez de ensanchar la página
+  overflow-wrap: break-word;
 
   // Texto justificado solo en párrafos del cuerpo.
   p {
@@ -483,6 +500,63 @@ body::-webkit-scrollbar {
 @media (max-width: 800px) {
   .page > #quartz-body, body > main { padding-bottom: 160px; }
 
+  .explorer.desktop-only { display: none; }
+  .explorer.mobile-only { display: flex; }
+  .tags-panel.desktop-only { display: none !important; }
+  .tags-panel.mobile-only { display: flex !important; }
+
+  // columna única que no crece más que la pantalla
+  .page > #quartz-body {
+    grid-template-columns: minmax(0, 1fr);
+    > * { min-width: 0; }
+  }
+
+  // barra superior: al hacer scroll solo quedan fijos los controles
+  .page > #quartz-body > .sidebar.left:has(.explorer) {
+    --bar-pad: 1rem;
+    --title-h: calc(1.35rem * 1.2);
+    --row-gap: 0.75rem;
+
+    flex-wrap: wrap;
+    gap: var(--row-gap) 0.6rem;
+    padding: var(--bar-pad) 0 0.75rem;
+    top: calc(0.5rem - var(--bar-pad) - var(--title-h) - var(--row-gap));
+    z-index: 10;
+    border-bottom: 1px solid var(--lightgray);
+
+    > .page-title {
+      order: -2;
+      flex: 1 0 100%;
+      font-size: 1.35rem;
+      line-height: 1.2;
+    }
+    > .spacer { display: none; }
+    > .flex-component { flex: 1 1 0; min-width: 0; }
+    .search { max-width: none; }
+  }
+
+  // explorer móvil sin panel: backdrop-filter atrapaba el overlay del menú
+  :root .sidebar.left .explorer {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    margin: auto 0;
+    backdrop-filter: none;
+  }
+  .sidebar.left .explorer .explorer-content {
+    position: fixed;
+    padding: 6rem 1rem 2rem;
+  }
+
+  // paneles apilados debajo del artículo
+  .page > #quartz-body > .sidebar.right {
+    flex-direction: column;
+    gap: 0.4rem;
+    > * { flex: 0 0 auto; max-height: none; }
+    > .social-links { order: 1; }
+  }
+
   :root[saved-theme="dark"] {
     .recent-notes, .recent-visited, .tags-panel,
     .explorer, .toc, .backlinks {
@@ -529,7 +603,8 @@ body::-webkit-scrollbar {
 }
 
 @media (max-width: 600px) {
-  body > footer, footer.footer, .page > footer {
+  body > footer, footer.footer, .page > footer,
+  .page > #quartz-body > footer {
     padding: 2.5rem 0.8rem 2rem;
     margin-top: 3rem;
     font-size: 0.78em;

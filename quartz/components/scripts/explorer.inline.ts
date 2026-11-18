@@ -226,9 +226,16 @@ async function setupExplorer(currentSlug: FullSlug) {
       explorerUl.scrollTop = parseInt(scrollTop)
     } else {
       // try to scroll to the active element if it exists
+      // (only the list: scrollIntoView also scrolled the page on load)
       const activeElement = explorerUl.querySelector(".active")
       if (activeElement) {
-        activeElement.scrollIntoView({ behavior: "smooth" })
+        explorerUl.scrollTo({
+          top:
+            explorerUl.scrollTop +
+            activeElement.getBoundingClientRect().top -
+            explorerUl.getBoundingClientRect().top,
+          behavior: "smooth",
+        })
       }
     }
 
@@ -264,7 +271,8 @@ async function setupExplorer(currentSlug: FullSlug) {
 
 document.addEventListener("prenav", async () => {
   // save explorer scrollTop position
-  const explorer = document.querySelector(".explorer-ul")
+  const lists = [...document.querySelectorAll<HTMLElement>(".explorer-ul")]
+  const explorer = lists.find((ul) => ul.getClientRects().length > 0) ?? lists[0]
   if (!explorer) return
   sessionStorage.setItem("explorerScrollTop", explorer.scrollTop.toString())
 })

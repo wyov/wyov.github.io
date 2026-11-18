@@ -1,4 +1,5 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
+import { classNames } from "../util/lang"
 
 // @ts-ignore
 import script from "./scripts/recentVisited.inline"
@@ -14,9 +15,9 @@ import script from "./scripts/recentVisited.inline"
  *
  * Stored client-side in localStorage. Empty on first visit.
  */
-const RecentVisited: QuartzComponent = (_props: QuartzComponentProps) => {
+const RecentVisited: QuartzComponent = ({ displayClass }: QuartzComponentProps) => {
   return (
-    <div class="recent-visited">
+    <div class={classNames(displayClass, "recent-visited")}>
       <h3>Recent Visited</h3>
       <ul class="recent-visited-ul">
         <li class="empty-state">browse posts to track</li>

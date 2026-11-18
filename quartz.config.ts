@@ -65,7 +65,8 @@ const config: QuartzConfig = {
         keepBackground: false,
       }),
       Plugin.ObsidianFlavoredMarkdown({ enableInHtmlEmbed: false }),
-      Plugin.GitHubFlavoredMarkdown(),
+      // SmartyPants off: comandos con -- y comillas rectas
+      Plugin.GitHubFlavoredMarkdown({ enableSmartyPants: false }),
       Plugin.TableOfContents(),
       Plugin.CrawlLinks({ markdownLinkResolution: "shortest" }),
       Plugin.Description(),

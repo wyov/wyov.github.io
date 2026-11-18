@@ -103,27 +103,27 @@ function escapeHtml(s: string): string {
 }
 
 function renderVisited() {
-  const ul = document.querySelector(".recent-visited-ul")
-  if (!ul) return
+  // dos instancias: desktop-only + mobile-only
+  const lists = document.querySelectorAll(".recent-visited-ul")
+  if (lists.length === 0) return
 
   const items = loadVisited()
-
-  if (items.length === 0) {
-    ul.innerHTML = '<li class="empty-state">browse posts to track</li>'
-    return
-  }
-
   const currentPath = normalizePath(window.location.pathname)
 
-  ul.innerHTML = items
-    .map((item) => {
-      const isCurrent = item.url === currentPath
-      const activeAttr = isCurrent ? ' aria-current="page"' : ""
-      return `<li class="recent-visited-li"><a href="${item.url}" class="internal"${activeAttr}>${escapeHtml(
-        item.title,
-      )}</a></li>`
-    })
-    .join("")
+  const html =
+    items.length === 0
+      ? '<li class="empty-state">browse posts to track</li>'
+      : items
+          .map((item) => {
+            const isCurrent = item.url === currentPath
+            const activeAttr = isCurrent ? ' aria-current="page"' : ""
+            return `<li class="recent-visited-li"><a href="${item.url}" class="internal"${activeAttr}>${escapeHtml(
+              item.title,
+            )}</a></li>`
+          })
+          .join("")
+
+  lists.forEach((ul) => (ul.innerHTML = html))
 }
 
 document.addEventListener("nav", () => {
