@@ -16,7 +16,7 @@
   --w-active:       #a6e3a1;
   --w-panel-bg:     rgba(10, 10, 10, 0.55);
   --w-panel-border: #14413d;
-  --w-panel-h:      #c84545;
+  --w-panel-h:      #c81e3a;
   --w-easing:       cubic-bezier(0.4, 0, 0.2, 1);
   --w-tr:           0.22s var(--w-easing);
   --w-tr-fast:      0.05s var(--w-easing);
@@ -135,6 +135,14 @@ body > main { padding-bottom: 200px; }
 .explorer.mobile-only { display: none; }
 .tags-panel.mobile-only { display: none !important; }
 
+// verde exacto de la franja en explorer y navegación
+:root[saved-theme="dark"] {
+  .explorer,
+  .breadcrumb-container,
+  .navigation-progress { --secondary: var(--w-panel-border); }
+  .breadcrumb-element p { color: var(--secondary); }
+}
+
 .recent-notes > h1, .recent-notes > h2, .recent-notes > h3, .recent-notes > h4,
 .recent-visited > h1, .recent-visited > h2, .recent-visited > h3, .recent-visited > h4,
 .tags-panel > h1, .tags-panel > h2, .tags-panel > h3, .tags-panel > h4,
@@ -181,6 +189,10 @@ button.toc-header h1, button.toc-header h2, button.toc-header h3,
     text-decoration: none;
   }
 }
+// mismo gris que explorer y toc
+.recent-visited li.recent-visited-li a:not([aria-current]),
+.recent-notes .desc > h3 > a { opacity: 0.75; }
+
 .recent-visited .empty-state {
   font-size: 0.78em;
   color: var(--ctp-overlay1);
@@ -242,6 +254,7 @@ ul.toc-content,
   .explorer .file-link[data-current="true"],
   .explorer a[aria-current="page"],
   .explorer .folder-outer .file[data-current="true"],
+  .explorer .explorer-ul a.active,
   .recent-notes a[aria-current="page"],
   .recent-visited a[aria-current="page"] {
     color: var(--w-active) !important;
@@ -317,7 +330,7 @@ ul.toc-content,
   }
 
   $tag-categories: (
-    (#e8856a, ("red-team" "red_team" "offensive" "exploit" "attack" "pentest" "byovd" "vulnerability" "malware" "jwt")),
+    (#c81e3a, ("red-team" "red_team" "offensive" "exploit" "attack" "pentest" "byovd" "vulnerability" "malware" "jwt")),
     (#89b4fa, ("ad" "kerberos" "ldap" "auth" "identity" "sso" "okta")),
     (#a6e3a1, ("hackthebox" "easy" "enum" "recon" "methodology" "osint" "discovery")),
     (#cba6f7, ("windows" "kernel" "internals" "syscall" "driver" "web")),
@@ -341,12 +354,46 @@ ul.toc-content,
   }
 }
 
-// H) Callouts note/info — teal ------------------------------------
+// H) Paleta de los writeups: callouts + artículo ------------------
 :root[saved-theme="dark"] {
-  .callout[data-callout="note"],
-  .callout[data-callout="info"] {
-    --color: var(--ctp-teal);
-    --border: var(--w-panel-border);
+  $callouts: (
+    (#6fa4e2, ("note" "info" "todo" "abstract")),
+    (#9d6fe2, ("tip" "example")),
+    (#6fe286, ("success")),
+    (#e2bb6f, ("warning" "question")),
+    (#e26f9f, ("danger" "failure" "bug")),
+  );
+
+  @each $entry in $callouts {
+    $c: list.nth($entry, 1);
+    @each $type in list.nth($entry, 2) {
+      .callout[data-callout="#{$type}"] {
+        --color: #{$c};
+        --border: #{rgba($c, 0.35)};
+        --bg: #{rgba($c, 0.06)};
+      }
+    }
+  }
+
+  .page-header .article-title { color: #6fe2d2; }
+
+  article.popover-hint .callout {
+    border: none;
+    border-left: 3px solid var(--color);
+    border-radius: 0 4px 4px 0;
+  }
+
+  article.popover-hint {
+    --darkgray: #e6e9ef;
+    --dark: #ffffff;
+    h2 { color: #c81e3a; }
+    h3 { color: #788497; }
+    h4 { color: #8684c2; }
+    :not(pre) > code {
+      color: #e2bb6f;
+      background: rgba(226, 187, 111, 0.08);
+      border-color: rgba(226, 187, 111, 0.2);
+    }
   }
 }
 
@@ -769,7 +816,7 @@ article.popover-hint {
   }
 
   // Blockquote (> markdown). No afecta callouts.
-  blockquote {
+  blockquote:not(.callout) {
     margin: 1.5rem 0;
     padding: 0.6rem 1rem;
     border-left: 3px solid rgba(148, 226, 213, 0.4);

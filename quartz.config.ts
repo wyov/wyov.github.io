@@ -44,9 +44,9 @@ const config: QuartzConfig = {
           gray: "#7f849c",
           darkgray: "#a6adc8",
           dark: "#cdd6f4",
-          secondary: "#cba6f7",    // mauve
-          tertiary: "#b4befe",     // lavender
-          textHighlight: "#cba6f733",
+          secondary: "#2e948b",    // verde de las franjas, legible
+          tertiary: "#d4a574",     // dorado del hover
+          textHighlight: "#2e948b33",
         },
       },
     },
