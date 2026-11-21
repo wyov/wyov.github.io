@@ -354,14 +354,15 @@ ul.toc-content,
   }
 }
 
-// H) Paleta de los writeups: callouts + artículo ------------------
+// H) Paleta del artículo: granate + teal --------------------------
 :root[saved-theme="dark"] {
+  // callouts con los acentos del sitio: franja, lavanda, verde, dorado, granate
   $callouts: (
-    (#6fa4e2, ("note" "info" "todo" "abstract")),
-    (#9d6fe2, ("tip" "example")),
-    (#6fe286, ("success")),
-    (#e2bb6f, ("warning" "question")),
-    (#e26f9f, ("danger" "failure" "bug")),
+    (#39b7ac, ("note" "info" "todo" "abstract")),
+    (#b4befe, ("tip" "example")),
+    (#a6e3a1, ("success")),
+    (#d4a574, ("warning" "question")),
+    (#c81e3a, ("danger" "failure" "bug")),
   );
 
   @each $entry in $callouts {
@@ -375,7 +376,7 @@ ul.toc-content,
     }
   }
 
-  .page-header .article-title { color: #6fe2d2; }
+  .page-header .article-title { color: #cdd6f4; }
 
   article.popover-hint .callout {
     border: none;
@@ -384,15 +385,23 @@ ul.toc-content,
   }
 
   article.popover-hint {
-    --darkgray: #e6e9ef;
-    --dark: #ffffff;
+    --darkgray: #bac2de;
+    --dark: #cdd6f4;
+    --secondary: #39b7ac;
+    strong { color: #cdd6f4; }
+    // mismo granate que los encabezados de los paneles
     h2 { color: #c81e3a; }
-    h3 { color: #788497; }
-    h4 { color: #8684c2; }
+    h3 { color: #94e2d5; }
+    h4 { color: #a6adc8; }
     :not(pre) > code {
-      color: #e2bb6f;
-      background: rgba(226, 187, 111, 0.08);
-      border-color: rgba(226, 187, 111, 0.2);
+      color: #e0c9a6;
+      background: rgba(224, 201, 166, 0.07);
+      border-color: rgba(224, 201, 166, 0.18);
+    }
+    blockquote:not(.callout) {
+      --darkgray: #a6adc8;
+      border-left-color: rgba(57, 183, 172, 0.55);
+      background: rgba(57, 183, 172, 0.04);
     }
   }
 }
